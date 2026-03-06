@@ -437,6 +437,34 @@
     </style>
 </head>
 <body>
+    <!-- Sound Unlock Overlay -->
+    <div id="soundOverlay" style="
+        position: fixed; top: 0; left: 0; width: 375px; height: 812px;
+        background: linear-gradient(135deg, #0a3d2c 0%, #1a4d2e 50%, #2d5016 100%);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        z-index: 9999; gap: 30px; cursor: pointer;
+    " onclick="unlockSound()">
+        <div style="
+            font-family: 'Cinzel', serif; font-size: 1.6em; color: #a8e6a3;
+            text-align: center; letter-spacing: 3px;
+            filter: drop-shadow(0 0 20px #7cb342);
+            animation: glow-pulse 2s ease-in-out infinite;
+        ">✨ Happy Birthday ✨</div>
+        <div style="
+            width: 90px; height: 90px; border-radius: 50%;
+            background: linear-gradient(135deg, #4f9d69, #7cb342);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2.5em;
+            box-shadow: 0 0 40px rgba(125,179,66,0.6), 0 0 80px rgba(125,179,66,0.3);
+            animation: pulse 2s ease-in-out infinite;
+        ">🔊</div>
+        <div style="
+            font-family: 'Crimson Text', serif; font-size: 1.1em;
+            color: #e8f5e9; text-align: center; letter-spacing: 1px; padding: 0 30px;
+            opacity: 0.85;
+        ">تکایە بکەرەوە بۆ دەستپێکردن<br><span style="font-size:0.85em; opacity:0.7;">Tap anywhere to begin</span></div>
+    </div>
+
     <!-- Fireworks Canvas -->
     <div id="fireworksCanvas"></div>
 
@@ -484,6 +512,34 @@
     </audio>
 
     <script>
+        // ─── Sound Unlock ─────────────────────────────────────────────
+        // Pre-load and unlock audio context on first tap
+        const birthMusic = document.getElementById('birthMusic');
+        const safarMusic = document.getElementById('safarMusic');
+
+        function unlockSound() {
+            // Play and immediately pause to unlock the audio context
+            birthMusic.volume = 0;
+            birthMusic.play().then(() => {
+                birthMusic.pause();
+                birthMusic.currentTime = 0;
+                birthMusic.volume = 1;
+            }).catch(() => {});
+
+            safarMusic.volume = 0;
+            safarMusic.play().then(() => {
+                safarMusic.pause();
+                safarMusic.currentTime = 0;
+                safarMusic.volume = 1;
+            }).catch(() => {});
+
+            // Hide the overlay
+            const overlay = document.getElementById('soundOverlay');
+            overlay.style.transition = 'opacity 0.5s ease';
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 500);
+        }
+
         // ─── Fireworks ────────────────────────────────────────────────
         function createFirework() {
             const canvas = document.getElementById('fireworksCanvas');
@@ -578,7 +634,7 @@
                 </div>`;
             setTimeout(() => {
                 terminalText.innerHTML = '<button class="welcome-button active" onclick="startGallery()">کلیک لێرە بکە..</button>';
-                document.getElementById('birthMusic').play().catch(() => {});
+                birthMusic.play().catch(() => {});
             }, 8000);
         }
 
@@ -673,8 +729,6 @@
         // ─── Collage ──────────────────────────────────────────────────
         function showCollagePopup() {
             // Switch music
-            const birthMusic = document.getElementById('birthMusic');
-            const safarMusic = document.getElementById('safarMusic');
             birthMusic.pause();
             safarMusic.play().catch(() => {});
 
